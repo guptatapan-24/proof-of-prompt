@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,11 +6,23 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Wallet, Mail } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { ethers } from "ethers";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { user, signUp, signIn } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleEmailAuth = async (isSignUp: boolean) => {
     if (!email || !password) {
@@ -25,10 +37,26 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
-      // TODO: Implement Supabase auth
+      const { error } = isSignUp 
+        ? await signUp(email, password)
+        : await signIn(email, password);
+
+      if (error) {
+        if (error.message.includes("already registered")) {
+          toast.error("This email is already registered. Please sign in instead.");
+        } else if (error.message.includes("Invalid login credentials")) {
+          toast.error("Invalid email or password");
+        } else {
+          toast.error(error.message);
+        }
+        return;
+      }
+
       toast.success(isSignUp ? "Account created successfully!" : "Signed in successfully!");
-    } catch (error: any) {
-      toast.error(error.message || "Authentication failed");
+      navigate("/");
+    } catch (error) {
+      toast.error("Authentication failed");
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -42,10 +70,22 @@ const Auth = () => {
         return;
       }
 
-      // TODO: Implement MetaMask connection
-      toast.success("Wallet connected successfully!");
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase
+          .from('profiles')
+          .update({ wallet_address: address })
+          .eq('id', user.id);
+        
+        toast.success("Wallet connected!");
+      }
     } catch (error: any) {
       toast.error(error.message || "Wallet connection failed");
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

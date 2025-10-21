@@ -1,1 +1,4 @@
 project_id = "cwjewbauilxoqhddehew"
+
+[functions.generate-content]
+verify_jwt = true

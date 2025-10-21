@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,38 +7,69 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Search, Copy, CheckCircle2, XCircle, Clock } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { ethers } from "ethers";
 
 interface Proof {
   id: string;
   hash: string;
   prompt: string;
-  contentSnippet: string;
-  timestamp: string;
-  txHash?: string;
-  status: "verified" | "pending" | "unverified";
+  content_snippet: string;
+  generation_timestamp: string;
+  tx_hash?: string;
+  status: "verified" | "pending" | "failed";
 }
+
+// Replace with your deployed contract address
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+const CONTRACT_ABI = [
+  "function proofs(bytes32) external view returns (address)"
+];
 
 const Verify = () => {
   const [searchHash, setSearchHash] = useState("");
-  const [proofs, setProofs] = useState<Proof[]>([
-    {
-      id: "1",
-      hash: "0x1234...abcd",
-      prompt: "Write an essay about AI creativity",
-      contentSnippet: "In the realm of artificial intelligence...",
-      timestamp: "2025-01-15 14:30:00",
-      txHash: "0x9876...5432",
-      status: "verified"
-    },
-    {
-      id: "2",
-      hash: "0x5678...efgh",
-      prompt: "Create a poem about blockchain",
-      contentSnippet: "Immutable chains of trust...",
-      timestamp: "2025-01-14 09:15:00",
-      status: "pending"
+  const [proofs, setProofs] = useState<Proof[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      toast.error("Please sign in to view proofs");
+      navigate("/auth");
     }
-  ]);
+  }, [user, loading, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      loadProofs();
+    }
+  }, [user]);
+
+  const loadProofs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('proofs')
+        .select('*')
+        .eq('user_id', user!.id)
+        .order('generation_timestamp', { ascending: false });
+
+      if (error) {
+        console.error('Error loading proofs:', error);
+        toast.error("Failed to load proofs");
+        return;
+      }
+
+      setProofs((data || []) as Proof[]);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load proofs");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = async () => {
     if (!searchHash) {
@@ -47,16 +78,44 @@ const Verify = () => {
     }
 
     try {
-      // TODO: Query Supabase and blockchain for proof
-      toast.info("Search functionality coming soon!");
-    } catch (error: any) {
-      toast.error(error.message || "Search failed");
+      // Search in database
+      const { data, error } = await supabase
+        .from('proofs')
+        .select('*')
+        .eq('hash', searchHash)
+        .single();
+
+      if (error) {
+        toast.error("Proof not found in database");
+        return;
+      }
+
+      // Optionally verify on-chain if contract is deployed
+      if (CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000" && (window as any).ethereum) {
+        const provider = new ethers.BrowserProvider((window as any).ethereum);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+        const hashBytes = ethers.getBytes('0x' + searchHash);
+        const owner = await contract.proofs(hashBytes);
+        
+        if (owner === ethers.ZeroAddress) {
+          toast.warning("Proof found in database but not verified on-chain");
+        } else {
+          toast.success("Proof verified on-chain!");
+        }
+      } else {
+        toast.success("Proof found in database!");
+      }
+
+      setProofs([data as Proof]);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error searching for proof");
     }
   };
 
-  const copyToClipboard = (text: string, label: string) => {
+  const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast.success(`${label} copied to clipboard!`);
+    toast.success("Hash copied to clipboard!");
   };
 
   const getStatusIcon = (status: string) => {
@@ -70,16 +129,13 @@ const Verify = () => {
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "verified":
-        return "success";
-      case "pending":
-        return "warning";
-      default:
-        return "destructive";
-    }
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin">⏳</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-4">
@@ -107,7 +163,7 @@ const Verify = () => {
                 <Label htmlFor="search" className="sr-only">Proof Hash</Label>
                 <Input
                   id="search"
-                  placeholder="0x1234abcd..."
+                  placeholder="Enter hash..."
                   value={searchHash}
                   onChange={(e) => setSearchHash(e.target.value)}
                   className="font-mono"
@@ -130,64 +186,68 @@ const Verify = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Hash</TableHead>
-                  <TableHead>Prompt</TableHead>
-                  <TableHead>Content</TableHead>
-                  <TableHead>Timestamp</TableHead>
-                  <TableHead>TX Hash</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {proofs.map((proof) => (
-                  <TableRow key={proof.id}>
-                    <TableCell>
-                      <Badge 
-                        variant={getStatusColor(proof.status) as any}
-                        className="flex items-center gap-1 w-fit"
-                      >
-                        {getStatusIcon(proof.status)}
-                        {proof.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {proof.hash}
-                    </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {proof.prompt}
-                    </TableCell>
-                    <TableCell className="max-w-[150px] truncate text-muted-foreground text-sm">
-                      {proof.contentSnippet}
-                    </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {proof.timestamp}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">
-                      {proof.txHash || "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToClipboard(proof.hash, "Hash")}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Hash</TableHead>
+                    <TableHead>Prompt</TableHead>
+                    <TableHead>Content</TableHead>
+                    <TableHead>Timestamp</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            
-            {proofs.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">No proofs found. Create your first proof!</p>
-              </div>
-            )}
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                        Loading proofs...
+                      </TableCell>
+                    </TableRow>
+                  ) : proofs.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                        No proofs found. Generate your first proof!
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    proofs.map((proof) => (
+                      <TableRow key={proof.id}>
+                        <TableCell className="font-mono text-xs">
+                          {proof.hash.substring(0, 16)}...
+                        </TableCell>
+                        <TableCell className="max-w-xs truncate">{proof.prompt}</TableCell>
+                        <TableCell className="max-w-md truncate text-muted-foreground">
+                          {proof.content_snippet}
+                        </TableCell>
+                        <TableCell className="text-xs text-muted-foreground">
+                          {new Date(proof.generation_timestamp).toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={proof.status === "verified" ? "default" : "secondary"}
+                            className="flex items-center gap-1 w-fit"
+                          >
+                            {getStatusIcon(proof.status)}
+                            {proof.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(proof.hash)}
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>

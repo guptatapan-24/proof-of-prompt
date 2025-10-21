@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          updated_at: string
+          wallet_address: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          updated_at?: string
+          wallet_address?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          updated_at?: string
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      proofs: {
+        Row: {
+          content_snippet: string
+          created_at: string
+          generation_timestamp: string
+          hash: string
+          id: string
+          prompt: string
+          status: string
+          tx_hash: string | null
+          user_id: string
+        }
+        Insert: {
+          content_snippet: string
+          created_at?: string
+          generation_timestamp?: string
+          hash: string
+          id?: string
+          prompt: string
+          status?: string
+          tx_hash?: string | null
+          user_id: string
+        }
+        Update: {
+          content_snippet?: string
+          created_at?: string
+          generation_timestamp?: string
+          hash?: string
+          id?: string
+          prompt?: string
+          status?: string
+          tx_hash?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proofs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
