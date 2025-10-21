@@ -37,7 +37,7 @@ const Auth = () => {
   const handleWalletConnect = async () => {
     setIsLoading(true);
     try {
-      if (typeof window.ethereum === 'undefined') {
+      if (typeof (window as any).ethereum === 'undefined') {
         toast.error("Please install MetaMask to continue");
         return;
       }
