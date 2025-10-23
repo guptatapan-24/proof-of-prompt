@@ -136,10 +136,10 @@ const Generate = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
 
-      // Check network (Polygon Amoy = 80002)
+      // Check network (Ethereum Sepolia = 11155111)
       const network = await provider.getNetwork();
-      if (network.chainId !== 80002n) {
-        toast.error("Please switch to Polygon Amoy testnet in MetaMask");
+      if (network.chainId !== 11155111n) {
+        toast.error("Please switch to Ethereum Sepolia testnet in MetaMask");
         return;
       }
 
@@ -171,7 +171,7 @@ const Generate = () => {
       if (error.code === 4001) {
         toast.error("Transaction rejected by user");
       } else if (error.message?.includes("insufficient funds")) {
-        toast.error("Insufficient MATIC for gas fees");
+        toast.error("Insufficient ETH for gas fees");
       } else {
         toast.error("Failed to register on-chain");
       }
