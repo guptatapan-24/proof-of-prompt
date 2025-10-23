@@ -22,10 +22,21 @@ interface Proof {
   status: "verified" | "pending" | "failed";
 }
 
-// Replace with your deployed contract address
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+// IMPORTANT: After deploying, replace with YOUR deployed contract address from Step 4
+const CONTRACT_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE";
+
 const CONTRACT_ABI = [
-  "function proofs(bytes32) external view returns (address)"
+  {
+    "inputs": [{"internalType": "string", "name": "_contentHash", "type": "string"}],
+    "name": "verifyProof",
+    "outputs": [
+      {"internalType": "address", "name": "owner", "type": "address"},
+      {"internalType": "uint256", "name": "timestamp", "type": "uint256"},
+      {"internalType": "bool", "name": "exists", "type": "bool"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ];
 
 const Verify = () => {
@@ -91,16 +102,15 @@ const Verify = () => {
       }
 
       // Optionally verify on-chain if contract is deployed
-      if (CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000" && (window as any).ethereum) {
+      if (CONTRACT_ADDRESS !== "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE" && (window as any).ethereum) {
         const provider = new ethers.BrowserProvider((window as any).ethereum);
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-        const hashBytes = ethers.getBytes('0x' + searchHash);
-        const owner = await contract.proofs(hashBytes);
+        const result = await contract.verifyProof(searchHash);
         
-        if (owner === ethers.ZeroAddress) {
+        if (!result.exists) {
           toast.warning("Proof found in database but not verified on-chain");
         } else {
-          toast.success("Proof verified on-chain!");
+          toast.success(`Proof verified on-chain! Owner: ${result.owner}`);
         }
       } else {
         toast.success("Proof found in database!");

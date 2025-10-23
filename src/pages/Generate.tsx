@@ -11,12 +11,38 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ethers } from "ethers";
 
-// Replace with your deployed contract address
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+// IMPORTANT: After deploying, replace with YOUR deployed contract address from Step 4
+const CONTRACT_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE";
+
 const CONTRACT_ABI = [
-  "function registerProof(bytes32 hash) external payable",
-  "function proofs(bytes32) external view returns (address)",
-  "event ProofRegistered(bytes32 indexed hash, address indexed user, uint256 timestamp)"
+  {
+    "inputs": [{"internalType": "string", "name": "_contentHash", "type": "string"}],
+    "name": "registerProof",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "string", "name": "_contentHash", "type": "string"}],
+    "name": "verifyProof",
+    "outputs": [
+      {"internalType": "address", "name": "owner", "type": "address"},
+      {"internalType": "uint256", "name": "timestamp", "type": "uint256"},
+      {"internalType": "bool", "name": "exists", "type": "bool"}
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {"indexed": true, "internalType": "string", "name": "contentHash", "type": "string"},
+      {"indexed": true, "internalType": "address", "name": "owner", "type": "address"},
+      {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
+    ],
+    "name": "ProofRegistered",
+    "type": "event"
+  }
 ];
 
 const Generate = () => {
@@ -94,8 +120,8 @@ const Generate = () => {
       return;
     }
 
-    if (CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
-      toast.error("Smart contract not deployed yet. Please deploy the contract first.");
+    if (CONTRACT_ADDRESS === "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE") {
+      toast.error("Please update CONTRACT_ADDRESS with your deployed contract address");
       return;
     }
 
@@ -110,21 +136,20 @@ const Generate = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
 
-      // Check network (Polygon Mumbai = 80001)
+      // Check network (Polygon Amoy = 80002)
       const network = await provider.getNetwork();
-      if (network.chainId !== 80001n) {
-        toast.error("Please switch to Polygon Mumbai testnet in MetaMask");
+      if (network.chainId !== 80002n) {
+        toast.error("Please switch to Polygon Amoy testnet in MetaMask");
         return;
       }
 
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-      const hashBytes = ethers.getBytes('0x' + contentHash);
 
       toast.loading("Estimating gas...");
-      const gasEstimate = await contract.registerProof.estimateGas(hashBytes);
+      const gasEstimate = await contract.registerProof.estimateGas(contentHash);
       
       toast.loading("Confirm transaction in MetaMask...");
-      const tx = await contract.registerProof(hashBytes, {
+      const tx = await contract.registerProof(contentHash, {
         gasLimit: gasEstimate * 120n / 100n
       });
 
