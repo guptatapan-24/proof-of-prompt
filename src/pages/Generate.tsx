@@ -139,8 +139,41 @@ const Generate = () => {
       // Check network (Ethereum Sepolia = 11155111)
       const network = await provider.getNetwork();
       if (network.chainId !== 11155111n) {
-        toast.error("Please switch to Ethereum Sepolia testnet in MetaMask");
-        return;
+        try {
+          // Try to switch to Sepolia
+          await (window as any).ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0xaa36a7' }], // 11155111 in hex
+          });
+          toast.success("Switched to Sepolia network");
+        } catch (switchError: any) {
+          // If network doesn't exist, add it
+          if (switchError.code === 4902) {
+            try {
+              await (window as any).ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: '0xaa36a7',
+                  chainName: 'Ethereum Sepolia',
+                  nativeCurrency: {
+                    name: 'Sepolia ETH',
+                    symbol: 'ETH',
+                    decimals: 18
+                  },
+                  rpcUrls: ['https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+                  blockExplorerUrls: ['https://sepolia.etherscan.io']
+                }]
+              });
+              toast.success("Sepolia network added and switched");
+            } catch (addError) {
+              toast.error("Failed to add Sepolia network");
+              return;
+            }
+          } else {
+            toast.error("Please switch to Ethereum Sepolia testnet in MetaMask");
+            return;
+          }
+        }
       }
 
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
