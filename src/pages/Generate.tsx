@@ -133,13 +133,16 @@ const Generate = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
 
-      // Verify contract exists
+      // Verify contract exists at address
       const code = await provider.getCode(CONTRACT_ADDRESS);
       if (code === '0x') {
-        toast.error("Contract not found at this address. Please deploy the contract first or verify the address.");
+        toast.error(`No contract found at ${CONTRACT_ADDRESS} on Sepolia. Please deploy your ProofOfPrompt.sol contract first.`);
+        console.error(`Contract check failed - no code at ${CONTRACT_ADDRESS}`);
         setIsRegistering(false);
         return;
       }
+      
+      console.log(`Contract found at ${CONTRACT_ADDRESS}, code length: ${code.length}`);
 
       // Check network (Ethereum Sepolia = 11155111)
       const network = await provider.getNetwork();
