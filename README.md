@@ -77,7 +77,7 @@ To use this app:
 │   ├── functions/         # Edge functions
 │   └── migrations/        # Database schema
 └── public/                # Static assets
-
+```
 ---
 
 ## ⚙️ Setup and Installation
