@@ -1,289 +1,253 @@
-\# 🧠 Proof-of-Prompt
+# 🧠 Proof-of-Prompt
 
-A blockchain-based web application that \*\*proves the authorship and originality of AI-generated content\*\* using decentralized identity and immutable registries.
+A blockchain-based web application that **proves the authorship and originality of AI-generated content** using decentralized identity and immutable registries.  
+Built for **BlockQuest 2025**, this project explores the intersection of **AI, intellectual property protection, and blockchain verification**.
 
-Built for \*\*BlockQuest 2025\*\*, this project explores the intersection of \*\*AI, intellectual property protection, and blockchain verification\*\*.
+---
 
-\---
+## 🚀 Overview
 
-\## 🚀 Overview
+**Proof-of-Prompt** empowers users to:
+- 🧾 Generate AI-based essays or creative content.
+- 🪪 Register their content immutably on the blockchain as proof of authorship.
+- 🔍 Verify originality and timestamp through decentralized records.
 
-\*\*Proof-of-Prompt\*\* allows users to:
+The app integrates **Supabase** for backend management and **MetaMask** for blockchain identity verification — ensuring **secure, verifiable authorship tracking** for AI-generated works.  
+Originally built and hosted on **Lovable**, it is now linked to a personal Supabase instance.
 
-\- Generate essays or creative content using AI.
+---
 
-\- Register their content immutably on the blockchain as proof of authorship.
+## 🧩 Core Concept
 
-\- Verify originality and timestamp through decentralized records.
+> “Prove authorship/originality of AI-generated content using blockchain-based registries.”
 
-The application integrates \*\*Supabase\*\* for backend management and \*\*MetaMask\*\* for blockchain identity verification — ensuring secure, verifiable authorship tracking for AI-generated works.
+This project addresses the challenge of **intellectual property (IP) verification** in the era of generative AI.  
+By combining **blockchain transparency** with **AI prompt tracking**, it ensures creators can **claim, timestamp, and protect** ownership of their digital creations.
 
-\---
+---
 
-\## 🧩 Core Concept
+## 🪙 Blockchain Integration
 
-\> “Prove authorship/originality of AI-generated content using blockchain-based registries.”
+To use this app:
+1. Install the **MetaMask browser extension**.
+2. Create or connect your **MetaMask wallet**.
+3. Use your wallet identity to sign and store content hashes on the blockchain.
+4. Each entry acts as **immutable proof of authorship** and originality.
 
-This project addresses the challenge of \*\*intellectual property (IP) verification in the age of generative AI\*\*.
+---
 
-By leveraging \*\*blockchain transparency\*\* and \*\*AI prompt tracking\*\*, it ensures that creators can claim and protect ownership of their digital creations.
-
-\---
-
-\## 🪙 Blockchain Integration
-
-To use this app, users must:
-
-1\. Have the \*\*MetaMask browser extension\*\* installed.
-
-2\. Connect their \*\*MetaMask wallet\*\* to the app.
-
-3\. Use their wallet identity to sign and store content hashes on the blockchain for proof of authorship.
-
-This ensures \*\*decentralized identity verification\*\* and \*\*tamper-proof content proofing\*\*.
-
-\---
-
-\## 🧠 Built With
+## 🧠 Built With
 
 | Category | Technologies |
-
 |-----------|---------------|
+| **Frontend Framework** | React 18 + TypeScript |
+| **Build Tool** | Vite |
+| **Styling** | Tailwind CSS + shadcn/ui |
+| **UI Components** | Radix UI + Lucide React |
+| **Routing** | React Router DOM |
+| **Backend / Auth** | Supabase |
+| **Blockchain Identity** | MetaMask |
+| **Hosting** | Lovable |
+| **Package Manager** | Bun / npm |
 
-| \*\*Frontend Framework\*\* | React 18 + TypeScript |
+---
 
-| \*\*Build Tool\*\* | Vite |
+## 📂 Project Structure
 
-| \*\*Styling\*\* | Tailwind CSS + shadcn/ui |
-
-| \*\*UI Components\*\* | Radix UI + Lucide React Icons |
-
-| \*\*Routing\*\* | React Router DOM |
-
-| \*\*Backend / Auth\*\* | Supabase |
-
-| \*\*Blockchain Identity\*\* | MetaMask |
-
-| \*\*Hosting & Development\*\* | Lovable (linked project) |
-
-| \*\*Package Manager\*\* | Bun / npm |
-
-\---
-
-\## 📂 Project Structure
-
+```bash
 ├── src/
-
-│ ├── components/ # Reusable UI components
-
-│ │ ├── Navigation.tsx # Main navigation bar
-
-│ │ └── ui/ # shadcn/ui components
-
-│ ├── hooks/ # Custom React hooks
-
-│ │ ├── useAuth.tsx # Supabase auth logic
-
-│ │ ├── use-toast.ts # Toast notifications
-
-│ │ └── use-mobile.tsx # Device detection
-
-│ ├── integrations/ # External service integrations
-
-│ │ └── supabase/ # Supabase client setup
-
-│ ├── lib/ # Utility functions
-
-│ │ └── utils.ts # Helper utilities
-
-│ ├── pages/ # Application pages
-
-│ │ ├── Auth.tsx # Authentication UI
-
-│ │ └── Generate.tsx # Content generation & blockchain proof
-
-│ ├── App.tsx # Root component
-
-│ └── main.tsx # App entry point
-
+│   ├── components/        # Reusable UI components
+│   │   ├── Navigation.tsx # Main navigation bar
+│   │   └── ui/            # shadcn/ui components
+│   ├── hooks/             # Custom React hooks
+│   │   ├── useAuth.tsx    # Supabase authentication
+│   │   ├── use-toast.ts   # Toast notifications
+│   │   └── use-mobile.tsx # Mobile detection
+│   ├── integrations/      # External service integrations
+│   │   └── supabase/      # Supabase client setup
+│   ├── lib/               # Utility functions
+│   │   └── utils.ts       # Helper utilities
+│   ├── pages/             # Application pages
+│   │   ├── Auth.tsx       # Authentication UI
+│   │   └── Generate.tsx   # AI content generation + blockchain proof
+│   ├── App.tsx            # Root component
+│   └── main.tsx           # Application entry point
 ├── supabase/
-
-│ ├── config.toml # Supabase configuration
-
-│ ├── functions/ # Edge functions
-
-│ └── migrations/ # Database schema
-
-└── public/ # Static assets
-
-yaml
-
-Copy code
-
-\---
-
-\## ⚙️ Setup and Installation
-
-\### Prerequisites
-
-\- Node.js 18+ or Bun
-
-\- Supabase account
-
-\- MetaMask browser extension
-
-\- Supabase CLI (optional)
-
-\### Steps
-
-1\. \*\*Clone the repository:\*\*
-
-\`\`\`bash
-
-git clone https://github.com/guptatapan-24/proof-of-prompt.git
-
-cd proof-of-prompt
-
-Install dependencies:
-
-bash
-
-Copy code
-
-bun install
-
-or
-
-bash
-
-Copy code
-
-npm install
-
-Configure environment variables:
-
-Create a .env file in the root directory:
-
-env
-
-Copy code
-
-VITE\_SUPABASE\_URL=your-supabase-url
-
-VITE\_SUPABASE\_ANON\_KEY=your-supabase-anon-key
-
-Start the development server:
-
-bash
-
-Copy code
-
-bun run dev
-
-or
-
-bash
-
-Copy code
-
-npm run dev
-
-Open in browser:
-
-Visit → http://localhost:5173
-
-🔗 MetaMask Integration
-
-Before generating or verifying content:
-
-Install MetaMask on your browser.
-
-Connect your wallet when prompted.
-
-The wallet address acts as your decentralized author identity.
-
-Each content hash is stored on-chain to validate your authorship claim.
-
-🧠 How It Works
-
-User logs in using Supabase authentication.
-
-AI generates essay/content based on prompts.
-
-Content hash is created and linked to user’s MetaMask wallet.
-
-Hash stored on blockchain to provide immutable proof of authorship.
-
-Verification can be done later to confirm authorship using the same hash.
-
-🧱 Scripts
-
-CommandDescription
-
-bun run devStart development server
-
-bun run buildBuild for production
-
-bun run previewPreview production build
-
-bun run lintRun ESLint checks
-
-🧰 Development Notes
-
-Supabase Local Setup
-
-Start Supabase locally with:
-
-bash
-
-Copy code
-
+│   ├── config.toml        # Supabase configuration
+│   ├── functions/         # Edge functions
+│   └── migrations/        # Database schema
+└── public/                # Static assets
+
+---
+
+## ⚙️ Setup and Installation
+
+### 🧾 Prerequisites
+
+- Node.js 18+ or Bun  
+- Supabase account  
+- MetaMask browser extension  
+- Supabase CLI *(optional for local testing)*
+
+### 🧩 Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/guptatapan-24/proof-of-prompt.git
+   cd proof-of-prompt
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   bun install
+   ```
+   or
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables:**
+   
+   Create a `.env` file in the project root:
+   ```env
+   VITE_SUPABASE_URL=your-supabase-url
+   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+4. **Run the development server:**
+   ```bash
+   bun run dev
+   ```
+   or
+   ```bash
+   npm run dev
+   ```
+
+5. **Open in browser:**
+   ```
+   http://localhost:5173
+   ```
+
+## 🔗 MetaMask Integration
+
+Before generating or registering content:
+
+1. Ensure MetaMask is installed and unlocked
+2. Connect your wallet when prompted
+3. Your wallet address becomes your decentralized author identity
+4. Each generated content's hash is signed and stored on-chain for verification
+
+## 🧠 How It Works
+
+1. The user logs in via Supabase authentication
+2. The user inputs a prompt and AI generates content
+3. The generated content's hash is created locally
+4. The MetaMask wallet signs this hash and stores it on the blockchain
+5. This blockchain entry becomes a permanent authorship record
+6. Anyone can later verify authorship by comparing the hash
+
+## 🧱 Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `bun run dev` | Start development server |
+| `bun run build` | Build for production |
+| `bun run preview` | Preview production build |
+| `bun run lint` | Run ESLint code checks |
+
+## 🧰 Developer Notes
+
+### Supabase Local Setup
+
+Run Supabase locally for testing:
+
+```bash
 supabase start
+```
 
-Configuration: supabase/config.toml
+Configuration: `supabase/config.toml`
 
-Add New Components
+### Add New Components
 
 Using shadcn/ui:
 
-bash
+```bash
+npx shadcn-ui@latest add [component-name]
+```
 
-Copy code
+## ✏️ Editing the Project
 
-npx shadcn-ui@latest add \[component-name\]
+### Use Lovable
 
-🧑‍💻 Deployment
+Visit the [Lovable Project](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and start prompting. Changes made via Lovable will be committed automatically to this repo.
 
-Run:
+### Use Your Preferred IDE
 
-bash
+Clone the repo and push changes. Pushed changes will also be reflected in Lovable.
 
-Copy code
+### Edit Directly in GitHub
 
-bun run build
+- Navigate to the desired file(s)
+- Click the "Edit" button (pencil icon)
+- Make your changes and commit
 
-Deploy the dist/ directory on:
+### Use GitHub Codespaces
 
-Vercel
+- Navigate to the main page of your repository
+- Click on the "Code" button (green button)
+- Select the "Codespaces" tab
+- Click on "New codespace"
+- Edit files directly within the Codespace
 
-Netlify
+## 🚀 Deployment
 
-Cloudflare Pages
+1. **Build for production:**
+   ```bash
+   bun run build
+   ```
 
-AWS Amplify
+2. **Preview the build:**
+   ```bash
+   bun run preview
+   ```
 
-Remember to add environment variables on your hosting platform.
+3. **Deploy the `dist/` folder** on your preferred platform:
+   - Vercel
+   - Netlify
+   - Cloudflare Pages
+   - AWS Amplify
 
-📜 License
+   Or simply open [Lovable](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and click on **Share → Publish**.
 
-This project is licensed under the MIT License.
+4. **Set environment variables** (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) in your hosting dashboard.
 
-See the LICENSE file for details.
+## 🌐 Custom Domain
 
-🏆 Credits
+You can connect a custom domain to your Lovable project!
 
-Built with ❤️ by Tapan Gupta and team for BlockQuest 2025.
+Navigate to **Project > Settings > Domains** and click **Connect Domain**.
 
-Originally hosted and developed on Lovable.
+Read more: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
 
-Powered by Supabase, MetaMask, and React.
+## 📜 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 🏆 Credits
+
+Built with ❤️ by **Tapan Gupta** and team for **BlockQuest 2025**.
+
+- Originally hosted and developed on [Lovable](https://lovable.dev)
+- Powered by Supabase, MetaMask, and React
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a pull request
+
+---
+
+**GitHub Repository**: https://github.com/guptatapan-24/proof-of-prompt
