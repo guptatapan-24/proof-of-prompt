@@ -143,10 +143,9 @@ Before generating or registering content:
 
 | Command | Description |
 |---------|-------------|
-| `bun run dev` | Start development server |
-| `bun run build` | Build for production |
-| `bun run preview` | Preview production build |
-| `bun run lint` | Run ESLint code checks |
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
 
 ## 🧰 Developer Notes
 
@@ -192,12 +191,12 @@ Clone the repo and push changes. Pushed changes will also be reflected in Lovabl
 
 1. **Build for production:**
    ```bash
-   bun run build
+   npm run build
    ```
 
 2. **Preview the build:**
    ```bash
-   bun run preview
+   npm run preview
    ```
 
 3. **Deploy the `dist/` folder** on your preferred platform:
@@ -217,13 +216,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 🏆 Credits
 
 Built with ❤️ by **Tapan Gupta** for **BlockQuest 2025**.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a pull request
-
----
