@@ -10,8 +10,9 @@ import { Search, Copy, CheckCircle2, XCircle, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { ethers } from "ethers";
+import { ethers, zeroPadValue } from "ethers";
 import { Navigation } from "@/components/Navigation";
+// import { hexZeroPad } from "@ethersproject/bytes";
 
 interface Proof {
   id: string;
@@ -23,21 +24,33 @@ interface Proof {
   status: "verified" | "pending" | "failed";
 }
 
-// IMPORTANT: After deploying, replace with YOUR deployed contract address from Step 4
-const CONTRACT_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE";
+const CONTRACT_ADDRESS = "0x4252A005C702A11D8C1F8f250c71fCd8eC264d20";
 
 const CONTRACT_ABI = [
   {
-    "inputs": [{"internalType": "string", "name": "_contentHash", "type": "string"}],
-    "name": "verifyProof",
-    "outputs": [
-      {"internalType": "address", "name": "owner", "type": "address"},
-      {"internalType": "uint256", "name": "timestamp", "type": "uint256"},
-      {"internalType": "bool", "name": "exists", "type": "bool"}
+    inputs: [{ internalType: "bytes32", name: "_hash", type: "bytes32" }],
+    name: "registerProof",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [{ internalType: "bytes32", name: "_hash", type: "bytes32" }],
+    name: "verifyProof",
+    outputs: [{ internalType: "address", name: "", type: "address" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: "bytes32", name: "hash", type: "bytes32" },
+      { indexed: true, internalType: "address", name: "owner", type: "address" },
+      { indexed: false, internalType: "uint256", name: "timestamp", type: "uint256" },
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
+    name: "ProofRegistered",
+    type: "event",
+  },
 ];
 
 const Verify = () => {
@@ -55,74 +68,143 @@ const Verify = () => {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    if (user) {
-      loadProofs();
-    }
+    if (user) loadProofs();
   }, [user]);
 
   const loadProofs = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('proofs')
-        .select('*')
-        .eq('user_id', user!.id)
-        .order('generation_timestamp', { ascending: false });
+  setIsLoading(true);
+  try {
+    const { data, error } = await supabase
+      .from("proofs")
+      .select("*")
+      .eq("user_id", user!.id)
+      .order("generation_timestamp", { ascending: false });
 
-      if (error) {
-        console.error('Error loading proofs:', error);
-        toast.error("Failed to load proofs");
-        return;
-      }
-
-      setProofs((data || []) as Proof[]);
-    } catch (error) {
-      console.error(error);
+    if (error) {
+      console.error("Error loading proofs:", error);
       toast.error("Failed to load proofs");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchHash) {
-      toast.error("Please enter a hash to search");
       return;
     }
 
-    try {
-      // Search in database
-      const { data, error } = await supabase
-        .from('proofs')
-        .select('*')
-        .eq('hash', searchHash)
-        .single();
+    let proofsData = (data || []) as Proof[];
 
-      if (error) {
-        toast.error("Proof not found in database");
-        return;
-      }
+    // On-chain verification
+    if ((window as any).ethereum) {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const network = await provider.getNetwork();
 
-      // Optionally verify on-chain if contract is deployed
-      if (CONTRACT_ADDRESS !== "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE" && (window as any).ethereum) {
-        const provider = new ethers.BrowserProvider((window as any).ethereum);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
-        const result = await contract.verifyProof(searchHash);
-        
-        if (!result.exists) {
-          toast.warning("Proof found in database but not verified on-chain");
-        } else {
-          toast.success(`Proof verified on-chain! Owner: ${result.owner}`);
-        }
+      if (network.chainId !== 11155111n) {
+        toast.warning("Switch MetaMask to Sepolia to verify on-chain status.");
       } else {
-        toast.success("Proof found in database!");
-      }
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
 
-      setProofs([data as Proof]);
-    } catch (error) {
-      console.error(error);
-      toast.error("Error searching for proof");
+        for (let i = 0; i < proofsData.length; i++) {
+          try {
+            // Ensure hash has 0x prefix
+            const hash = proofsData[i].hash.startsWith("0x")
+              ? proofsData[i].hash
+              : "0x" + proofsData[i].hash;
+
+            const hashBytes32 = zeroPadValue(hash, 32);
+
+            const owner = await contract.verifyProof(hashBytes32);
+
+            console.log(`Hash: ${hash}, Owner: ${owner}`);
+
+            proofsData[i].status =
+              owner === ethers.ZeroAddress ? "pending" : "verified";
+          } catch (err) {
+            console.error(`Error verifying proof ${proofsData[i].hash} on-chain:`, err);
+            proofsData[i].status = "failed";
+          }
+        }
+      }
+    } else {
+      toast.info("MetaMask not detected, on-chain verification skipped.");
     }
-  };
+
+    setProofs(proofsData);
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to load proofs");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
+  // import { ethers, hexZeroPad } from "ethers"; // ✅ import hexZeroPad directly
+
+const handleSearch = async () => {
+  if (!searchHash) {
+    toast.error("Please enter a hash to search");
+    return;
+  }
+
+  // Normalize hash to lowercase
+  let normalizedHash = searchHash.toLowerCase();
+  if (normalizedHash.startsWith("0x")) {
+    normalizedHash = normalizedHash.slice(2); // remove 0x for DB lookup
+  }
+
+  if (!/^[a-f0-9]{64}$/.test(normalizedHash)) {
+    toast.error("Please enter a valid 32-byte hash (with or without 0x prefix)");
+    return;
+  }
+
+  try {
+    // DB lookup WITHOUT 0x
+    const { data, error } = await supabase
+      .from("proofs")
+      .select("*")
+      .eq("hash", normalizedHash)
+      .single();
+
+    if (error || !data) {
+      toast.error("Proof not found in database");
+      return;
+    }
+
+    let updatedProof = data as Proof;
+
+    if ((window as any).ethereum) {
+      const provider = new ethers.BrowserProvider((window as any).ethereum);
+      const network = await provider.getNetwork();
+
+      if (network.chainId !== 11155111n) {
+        toast.warning("Please switch MetaMask to Ethereum Sepolia Testnet!");
+      } else {
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+
+        try {
+          // On-chain verification REQUIRES 0x prefix
+          const onChainHash = "0x" + normalizedHash;
+          const owner = await contract.verifyProof(zeroPadValue(onChainHash, 32));
+
+          if (owner === ethers.ZeroAddress) {
+            toast.warning("Proof exists in DB but not registered on-chain.");
+            updatedProof.status = "pending";
+          } else {
+            toast.success(`✅ Proof verified on-chain! Owner: ${owner}`);
+            updatedProof.status = "verified";
+          }
+        } catch (err) {
+          console.error("Error verifying on-chain:", err);
+          toast.error("Failed to verify proof on-chain");
+        }
+      }
+    } else {
+      toast.info("MetaMask not detected, verifying locally only.");
+    }
+
+    setProofs([updatedProof]);
+  } catch (err) {
+    console.error(err);
+    toast.error("Error searching for proof");
+  }
+};
+
+
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -132,18 +214,18 @@ const Verify = () => {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "verified":
-        return <CheckCircle2 className="w-4 h-4" />;
+        return <CheckCircle2 className="w-4 h-4 text-green-500" />;
       case "pending":
-        return <Clock className="w-4 h-4" />;
+        return <Clock className="w-4 h-4 text-yellow-500" />;
       default:
-        return <XCircle className="w-4 h-4" />;
+        return <XCircle className="w-4 h-4 text-red-500" />;
     }
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin">⏳</div>
+        <div className="animate-spin text-primary text-2xl">⏳</div>
       </div>
     );
   }
@@ -152,118 +234,117 @@ const Verify = () => {
     <div className="min-h-screen">
       <Navigation />
       <div className="p-4">
-      <div className="container mx-auto max-w-6xl py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Verification Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Query and verify proof ownership across blockchain and database
-          </p>
-        </div>
+        <div className="container mx-auto max-w-6xl py-8">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Verification Dashboard
+            </h1>
+            <p className="text-muted-foreground">
+              Query and verify proof ownership across blockchain and database
+            </p>
+          </div>
 
-        {/* Search Card */}
-        <Card className="gradient-card shadow-card border-0 mb-8">
-          <CardHeader>
-            <CardTitle>Search Proof</CardTitle>
-            <CardDescription>
-              Enter a proof hash to verify its authenticity
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <Label htmlFor="search" className="sr-only">Proof Hash</Label>
-                <Input
-                  id="search"
-                  placeholder="Enter hash..."
-                  value={searchHash}
-                  onChange={(e) => setSearchHash(e.target.value)}
-                  className="font-mono"
-                />
+          {/* Search Card */}
+          <Card className="gradient-card shadow-card border-0 mb-8">
+            <CardHeader>
+              <CardTitle>Search Proof</CardTitle>
+              <CardDescription>Enter a proof hash to verify its authenticity</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <Label htmlFor="search" className="sr-only">
+                    Proof Hash
+                  </Label>
+                  <Input
+                    id="search"
+                    placeholder="Enter hash..."
+                    value={searchHash}
+                    onChange={(e) => setSearchHash(e.target.value)}
+                    className="font-mono"
+                  />
+                </div>
+                <Button onClick={handleSearch} variant="hero">
+                  <Search className="mr-2 h-4 w-4" />
+                  Search
+                </Button>
               </div>
-              <Button onClick={handleSearch} variant="hero">
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Proofs Table */}
-        <Card className="gradient-card shadow-card border-0">
-          <CardHeader>
-            <CardTitle>Your Proofs</CardTitle>
-            <CardDescription>
-              All registered proofs linked to your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Hash</TableHead>
-                    <TableHead>Prompt</TableHead>
-                    <TableHead>Content</TableHead>
-                    <TableHead>Timestamp</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {isLoading ? (
+          {/* Proofs Table */}
+          <Card className="gradient-card shadow-card border-0">
+            <CardHeader>
+              <CardTitle>Your Proofs</CardTitle>
+              <CardDescription>All registered proofs linked to your account</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                        Loading proofs...
-                      </TableCell>
+                      <TableHead>Hash</TableHead>
+                      <TableHead>Prompt</TableHead>
+                      <TableHead>Content</TableHead>
+                      <TableHead>Timestamp</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ) : proofs.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                        No proofs found. Generate your first proof!
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    proofs.map((proof) => (
-                      <TableRow key={proof.id}>
-                        <TableCell className="font-mono text-xs">
-                          {proof.hash.substring(0, 16)}...
-                        </TableCell>
-                        <TableCell className="max-w-xs truncate">{proof.prompt}</TableCell>
-                        <TableCell className="max-w-md truncate text-muted-foreground">
-                          {proof.content_snippet}
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground">
-                          {new Date(proof.generation_timestamp).toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={proof.status === "verified" ? "default" : "secondary"}
-                            className="flex items-center gap-1 w-fit"
-                          >
-                            {getStatusIcon(proof.status)}
-                            {proof.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => copyToClipboard(proof.hash)}
-                          >
-                            <Copy className="h-4 w-4" />
-                          </Button>
+                  </TableHeader>
+                  <TableBody>
+                    {isLoading ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                          Loading proofs...
                         </TableCell>
                       </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                    ) : proofs.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                          No proofs found. Generate your first proof!
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      proofs.map((proof) => (
+                        <TableRow key={proof.id}>
+                          <TableCell className="font-mono text-xs">
+                            {proof.hash.substring(0, 16)}...
+                          </TableCell>
+                          <TableCell className="max-w-xs truncate">{proof.prompt}</TableCell>
+                          <TableCell className="max-w-md truncate text-muted-foreground">
+                            {proof.content_snippet}
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {new Date(proof.generation_timestamp).toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`flex items-center gap-1 w-fit ${
+    proof.status === "verified" ? "bg-white text-black" : "bg-gray-200 text-gray-700"
+  }`}
+                            >
+                              {getStatusIcon(proof.status)}
+                              {proof.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => copyToClipboard(proof.hash)}
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

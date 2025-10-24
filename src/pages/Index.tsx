@@ -61,7 +61,7 @@ const Index = () => {
             </div>
             <h3 className="text-xl font-semibold mb-3">On-Chain Registry</h3>
             <p className="text-muted-foreground">
-              Anchor your proof on Polygon blockchain with low gas fees. 
+              Anchor your proof on Ethereum Sepolia blockchain with low gas fees. 
               Smart contract creates an immutable record linking your hash to your wallet.
             </p>
           </div>
@@ -86,10 +86,10 @@ const Index = () => {
           
           <div className="space-y-6">
             {[
-              { step: "01", title: "Authenticate", desc: "Sign in with email/password or connect your MetaMask wallet" },
+              { step: "01", title: "Authenticate", desc: "Sign in with email/password" },
               { step: "02", title: "Generate Content", desc: "Input your prompt and let AI create unique content for you" },
               { step: "03", title: "Create Proof", desc: "System generates SHA256 hash and stores metadata securely" },
-              { step: "04", title: "Register On-Chain", desc: "Anchor your proof to Polygon blockchain with one click" },
+              { step: "04", title: "Register On-Chain", desc: "Anchor your proof to Ethereum Sepolia blockchain with one click" },
               { step: "05", title: "Verify & Share", desc: "Access your verification dashboard to prove ownership anytime" },
             ].map((item, idx) => (
               <div key={idx} className="flex gap-6 items-start glass-effect rounded-lg p-6 transition-smooth hover:bg-white/10">

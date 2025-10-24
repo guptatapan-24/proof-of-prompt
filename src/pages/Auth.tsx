@@ -109,7 +109,7 @@ const Auth = () => {
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsTrigger value="">Sign Up</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin" className="space-y-4">
@@ -147,7 +147,7 @@ const Auth = () => {
               </Button>
             </TabsContent>
             
-            <TabsContent value="signup" className="space-y-4">
+            <TabsContent value="" className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email-signup">Email</Label>
                 <div className="relative">
@@ -184,16 +184,16 @@ const Auth = () => {
             </TabsContent>
           </Tabs>
 
-          <div className="relative my-6">
+          {/* <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
               <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
               <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
             </div>
-          </div>
+          </div> */}
 
-          <Button 
+          {/* <Button 
             onClick={handleWalletConnect} 
             className="w-full" 
             variant="glass"
@@ -201,7 +201,7 @@ const Auth = () => {
           >
             <Wallet className="mr-2 h-4 w-4" />
             Connect MetaMask
-          </Button>
+          </Button> */}
         </CardContent>
       </Card>
       </div>
