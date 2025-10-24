@@ -1,73 +1,289 @@
-# Welcome to your Lovable project
+\# 🧠 Proof-of-Prompt
 
-## Project info
+A blockchain-based web application that \*\*proves the authorship and originality of AI-generated content\*\* using decentralized identity and immutable registries.
 
-**URL**: https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6
+Built for \*\*BlockQuest 2025\*\*, this project explores the intersection of \*\*AI, intellectual property protection, and blockchain verification\*\*.
 
-## How can I edit this code?
+\---
 
-There are several ways of editing your application.
+\## 🚀 Overview
 
-**Use Lovable**
+\*\*Proof-of-Prompt\*\* allows users to:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and start prompting.
+\- Generate essays or creative content using AI.
 
-Changes made via Lovable will be committed automatically to this repo.
+\- Register their content immutably on the blockchain as proof of authorship.
 
-**Use your preferred IDE**
+\- Verify originality and timestamp through decentralized records.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+The application integrates \*\*Supabase\*\* for backend management and \*\*MetaMask\*\* for blockchain identity verification — ensuring secure, verifiable authorship tracking for AI-generated works.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+\---
 
-Follow these steps:
+\## 🧩 Core Concept
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+\> “Prove authorship/originality of AI-generated content using blockchain-based registries.”
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+This project addresses the challenge of \*\*intellectual property (IP) verification in the age of generative AI\*\*.
 
-# Step 3: Install the necessary dependencies.
-npm i
+By leveraging \*\*blockchain transparency\*\* and \*\*AI prompt tracking\*\*, it ensures that creators can claim and protect ownership of their digital creations.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+\---
+
+\## 🪙 Blockchain Integration
+
+To use this app, users must:
+
+1\. Have the \*\*MetaMask browser extension\*\* installed.
+
+2\. Connect their \*\*MetaMask wallet\*\* to the app.
+
+3\. Use their wallet identity to sign and store content hashes on the blockchain for proof of authorship.
+
+This ensures \*\*decentralized identity verification\*\* and \*\*tamper-proof content proofing\*\*.
+
+\---
+
+\## 🧠 Built With
+
+| Category | Technologies |
+
+|-----------|---------------|
+
+| \*\*Frontend Framework\*\* | React 18 + TypeScript |
+
+| \*\*Build Tool\*\* | Vite |
+
+| \*\*Styling\*\* | Tailwind CSS + shadcn/ui |
+
+| \*\*UI Components\*\* | Radix UI + Lucide React Icons |
+
+| \*\*Routing\*\* | React Router DOM |
+
+| \*\*Backend / Auth\*\* | Supabase |
+
+| \*\*Blockchain Identity\*\* | MetaMask |
+
+| \*\*Hosting & Development\*\* | Lovable (linked project) |
+
+| \*\*Package Manager\*\* | Bun / npm |
+
+\---
+
+\## 📂 Project Structure
+
+├── src/
+
+│ ├── components/ # Reusable UI components
+
+│ │ ├── Navigation.tsx # Main navigation bar
+
+│ │ └── ui/ # shadcn/ui components
+
+│ ├── hooks/ # Custom React hooks
+
+│ │ ├── useAuth.tsx # Supabase auth logic
+
+│ │ ├── use-toast.ts # Toast notifications
+
+│ │ └── use-mobile.tsx # Device detection
+
+│ ├── integrations/ # External service integrations
+
+│ │ └── supabase/ # Supabase client setup
+
+│ ├── lib/ # Utility functions
+
+│ │ └── utils.ts # Helper utilities
+
+│ ├── pages/ # Application pages
+
+│ │ ├── Auth.tsx # Authentication UI
+
+│ │ └── Generate.tsx # Content generation & blockchain proof
+
+│ ├── App.tsx # Root component
+
+│ └── main.tsx # App entry point
+
+├── supabase/
+
+│ ├── config.toml # Supabase configuration
+
+│ ├── functions/ # Edge functions
+
+│ └── migrations/ # Database schema
+
+└── public/ # Static assets
+
+yaml
+
+Copy code
+
+\---
+
+\## ⚙️ Setup and Installation
+
+\### Prerequisites
+
+\- Node.js 18+ or Bun
+
+\- Supabase account
+
+\- MetaMask browser extension
+
+\- Supabase CLI (optional)
+
+\### Steps
+
+1\. \*\*Clone the repository:\*\*
+
+\`\`\`bash
+
+git clone https://github.com/guptatapan-24/proof-of-prompt.git
+
+cd proof-of-prompt
+
+Install dependencies:
+
+bash
+
+Copy code
+
+bun install
+
+or
+
+bash
+
+Copy code
+
+npm install
+
+Configure environment variables:
+
+Create a .env file in the root directory:
+
+env
+
+Copy code
+
+VITE\_SUPABASE\_URL=your-supabase-url
+
+VITE\_SUPABASE\_ANON\_KEY=your-supabase-anon-key
+
+Start the development server:
+
+bash
+
+Copy code
+
+bun run dev
+
+or
+
+bash
+
+Copy code
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+Open in browser:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Visit → http://localhost:5173
 
-**Use GitHub Codespaces**
+🔗 MetaMask Integration
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Before generating or verifying content:
 
-## What technologies are used for this project?
+Install MetaMask on your browser.
 
-This project is built with:
+Connect your wallet when prompted.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The wallet address acts as your decentralized author identity.
 
-## How can I deploy this project?
+Each content hash is stored on-chain to validate your authorship claim.
 
-Simply open [Lovable](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and click on Share -> Publish.
+🧠 How It Works
 
-## Can I connect a custom domain to my Lovable project?
+User logs in using Supabase authentication.
 
-Yes, you can!
+AI generates essay/content based on prompts.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Content hash is created and linked to user’s MetaMask wallet.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Hash stored on blockchain to provide immutable proof of authorship.
+
+Verification can be done later to confirm authorship using the same hash.
+
+🧱 Scripts
+
+CommandDescription
+
+bun run devStart development server
+
+bun run buildBuild for production
+
+bun run previewPreview production build
+
+bun run lintRun ESLint checks
+
+🧰 Development Notes
+
+Supabase Local Setup
+
+Start Supabase locally with:
+
+bash
+
+Copy code
+
+supabase start
+
+Configuration: supabase/config.toml
+
+Add New Components
+
+Using shadcn/ui:
+
+bash
+
+Copy code
+
+npx shadcn-ui@latest add \[component-name\]
+
+🧑‍💻 Deployment
+
+Run:
+
+bash
+
+Copy code
+
+bun run build
+
+Deploy the dist/ directory on:
+
+Vercel
+
+Netlify
+
+Cloudflare Pages
+
+AWS Amplify
+
+Remember to add environment variables on your hosting platform.
+
+📜 License
+
+This project is licensed under the MIT License.
+
+See the LICENSE file for details.
+
+🏆 Credits
+
+Built with ❤️ by Tapan Gupta and team for BlockQuest 2025.
+
+Originally hosted and developed on Lovable.
+
+Powered by Supabase, MetaMask, and React.
