@@ -183,6 +183,21 @@ const Generate = () => {
 
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
+      // Test if proof already exists
+      try {
+        const [owner, timestamp, exists] = await contract.verifyProof(contentHash);
+        if (exists) {
+          toast.error("This proof has already been registered on-chain");
+          setIsRegistering(false);
+          return;
+        }
+      } catch (verifyError) {
+        console.error("Verify check failed:", verifyError);
+        toast.error("Unable to verify contract. Please ensure the contract is deployed correctly at the address specified.");
+        setIsRegistering(false);
+        return;
+      }
+
       toast.loading("Estimating gas...");
       const gasEstimate = await contract.registerProof.estimateGas(contentHash);
       
