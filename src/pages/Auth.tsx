@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ethers } from "ethers";
+import { Navigation } from "@/components/Navigation";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -92,7 +93,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen">
+      <Navigation />
+      <div className="flex items-center justify-center p-4 mt-8">
       <Card className="w-full max-w-md gradient-card shadow-card border-0">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -201,6 +204,7 @@ const Auth = () => {
           </Button>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 };

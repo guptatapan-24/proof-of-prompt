@@ -1,28 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Shield, Fingerprint, Database, ArrowRight, LogOut } from "lucide-react";
+import { Shield, Fingerprint, Database, ArrowRight } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Navigation } from "@/components/Navigation";
 
 const Index = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
   return (
     <div className="min-h-screen">
+      <Navigation />
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="flex justify-end mb-4">
-            {user ? (
-              <Button variant="ghost" onClick={signOut} className="gap-2">
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </Button>
-            ) : (
-              <Button variant="outline" asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
-            )}
-          </div>
 
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-effect mb-6 animate-fade-in">
             <Shield className="w-4 h-4 text-primary" />

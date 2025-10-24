@@ -10,9 +10,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ethers } from "ethers";
+import { Navigation } from "@/components/Navigation";
 
 // IMPORTANT: After deploying, replace with YOUR deployed contract address from Step 4
-const CONTRACT_ADDRESS = "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE";
+const CONTRACT_ADDRESS = "0x9F0441CF54141D58c6DF739ffEFd31C50977035c";
 
 const CONTRACT_ABI = [
   {
@@ -120,11 +121,6 @@ const Generate = () => {
       return;
     }
 
-    if (CONTRACT_ADDRESS === "YOUR_DEPLOYED_CONTRACT_ADDRESS_HERE") {
-      toast.error("Please update CONTRACT_ADDRESS with your deployed contract address");
-      return;
-    }
-
     setIsRegistering(true);
     try {
       if (!(window as any).ethereum) {
@@ -223,7 +219,9 @@ const Generate = () => {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen">
+      <Navigation />
+      <div className="p-4">
       <div className="container mx-auto max-w-5xl py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -347,6 +345,7 @@ const Generate = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
       </div>
     </div>
   );

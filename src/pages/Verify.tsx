@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { ethers } from "ethers";
+import { Navigation } from "@/components/Navigation";
 
 interface Proof {
   id: string;
@@ -148,7 +149,9 @@ const Verify = () => {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen">
+      <Navigation />
+      <div className="p-4">
       <div className="container mx-auto max-w-6xl py-8">
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -260,6 +263,7 @@ const Verify = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
       </div>
     </div>
   );
