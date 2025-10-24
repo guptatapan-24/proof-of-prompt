@@ -99,10 +99,6 @@ To use this app:
 
 2. **Install dependencies:**
    ```bash
-   bun install
-   ```
-   or
-   ```bash
    npm install
    ```
 
@@ -111,28 +107,25 @@ To use this app:
    Create a `.env` file in the project root:
    ```env
    VITE_SUPABASE_URL=your-supabase-url
-   VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
+   VITE_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
+   VITE_SUPABASE_PROJECT_ID=your-supabase-project-id
    ```
 
 4. **Run the development server:**
-   ```bash
-   bun run dev
-   ```
-   or
    ```bash
    npm run dev
    ```
 
 5. **Open in browser:**
    ```
-   http://localhost:5173
+   http://localhost:8080
    ```
 
 ## 🔗 MetaMask Integration
 
 Before generating or registering content:
 
-1. Ensure MetaMask is installed and unlocked
+1. Ensure MetaMask extension is installed and unlocked
 2. Connect your wallet when prompted
 3. Your wallet address becomes your decentralized author identity
 4. Each generated content's hash is signed and stored on-chain for verification
@@ -177,10 +170,6 @@ npx shadcn-ui@latest add [component-name]
 
 ## ✏️ Editing the Project
 
-### Use Lovable
-
-Visit the [Lovable Project](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and start prompting. Changes made via Lovable will be committed automatically to this repo.
-
 ### Use Your Preferred IDE
 
 Clone the repo and push changes. Pushed changes will also be reflected in Lovable.
@@ -217,17 +206,9 @@ Clone the repo and push changes. Pushed changes will also be reflected in Lovabl
    - Cloudflare Pages
    - AWS Amplify
 
-   Or simply open [Lovable](https://lovable.dev/projects/4f302336-0445-43aa-b3fa-849dd1cf70f6) and click on **Share → Publish**.
 
 4. **Set environment variables** (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) in your hosting dashboard.
-
-## 🌐 Custom Domain
-
-You can connect a custom domain to your Lovable project!
-
-Navigate to **Project > Settings > Domains** and click **Connect Domain**.
-
-Read more: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+   
 
 ## 📜 License
 
@@ -235,10 +216,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 🏆 Credits
 
-Built with ❤️ by **Tapan Gupta** and team for **BlockQuest 2025**.
-
-- Originally hosted and developed on [Lovable](https://lovable.dev)
-- Powered by Supabase, MetaMask, and React
+Built with ❤️ by **Tapan Gupta** for **BlockQuest 2025**.
 
 ## 🤝 Contributing
 
@@ -249,5 +227,3 @@ Built with ❤️ by **Tapan Gupta** and team for **BlockQuest 2025**.
 5. Open a pull request
 
 ---
-
-**GitHub Repository**: https://github.com/guptatapan-24/proof-of-prompt
