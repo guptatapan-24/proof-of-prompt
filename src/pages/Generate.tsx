@@ -125,12 +125,21 @@ const Generate = () => {
     try {
       if (!(window as any).ethereum) {
         toast.error("Please install MetaMask");
+        setIsRegistering(false);
         return;
       }
 
       const provider = new ethers.BrowserProvider((window as any).ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
+
+      // Verify contract exists
+      const code = await provider.getCode(CONTRACT_ADDRESS);
+      if (code === '0x') {
+        toast.error("Contract not found at this address. Please deploy the contract first or verify the address.");
+        setIsRegistering(false);
+        return;
+      }
 
       // Check network (Ethereum Sepolia = 11155111)
       const network = await provider.getNetwork();
