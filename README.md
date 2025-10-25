@@ -222,6 +222,26 @@ Clone the repo and push changes. Pushed changes will also be reflected in Lovabl
 
 4. **Set environment variables** (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) in your hosting dashboard.
    
+## 📸 Project Demonstration
+
+### 🖼️ Screenshots
+
+| Feature | Screenshot |
+|----------|-------------|
+| **Homepage / Dashboard** | ![Homepage Screenshot](./assets/homepage.png) |
+| **AI Content Generation Page** | ![Generate Page](./assets/generate.png) |
+| **Blockchain Proof Transaction** | ![Blockchain Proof](./assets/blockchain-proof.png) |
+| **Verification Page** | ![Verification Page](./assets/verify.png) |
+
+---
+
+### 🎥 Demo / Setup Video
+
+| Description | Link |
+|--------------|------|
+| **Project Setup and Demo (Full Walkthrough)** | [Watch on Google Drive](https://drive.google.com/file/d/1q3JXfXszcrz7OlDkwFWvrKtr8eZUFkn0/view?usp=drive_link) |
+
+---
 
 ## 📜 License
 
