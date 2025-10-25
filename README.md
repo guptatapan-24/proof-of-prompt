@@ -10,7 +10,7 @@
 [![MetaMask](https://img.shields.io/badge/Wallet-MetaMask-F6851B?style=for-the-badge&logo=metamask)]()
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)]()
 [![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
-[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)]()
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-black?style=for-the-badge)]()
 
 ---
 
