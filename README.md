@@ -1,5 +1,19 @@
 # 🧠 Proof-of-Prompt
 
+[![Project](https://img.shields.io/badge/Project-Proof--of--Prompt-8A2BE2?style=for-the-badge)]()
+[![Hackathon](https://img.shields.io/badge/BlockQuest-2025-orange?style=for-the-badge)]()
+[![React](https://img.shields.io/badge/Frontend-React-blue?style=for-the-badge&logo=react)]()
+[![TypeScript](https://img.shields.io/badge/Language-TypeScript-3178C6?style=for-the-badge&logo=typescript)]()
+[![Tailwind](https://img.shields.io/badge/Styling-TailwindCSS-38B2AC?style=for-the-badge&logo=tailwindcss)]()
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3FCF8E?style=for-the-badge&logo=supabase)]()
+[![Blockchain](https://img.shields.io/badge/Blockchain-Ethereum-8C8C8C?style=for-the-badge&logo=ethereum)]()
+[![MetaMask](https://img.shields.io/badge/Wallet-MetaMask-F6851B?style=for-the-badge&logo=metamask)]()
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)]()
+[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)]()
+
+---
+
 A blockchain-based web application that **proves the authorship and originality of AI-generated content** using decentralized identity and immutable registries.  
 Built for **BlockQuest 2025**, this project explores the intersection of **AI, intellectual property protection, and blockchain verification**.
 
