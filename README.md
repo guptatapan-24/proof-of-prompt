@@ -13,7 +13,6 @@ Built for **BlockQuest 2025**, this project explores the intersection of **AI, i
 - 🔍 Verify originality and timestamp through decentralized records.
 
 The app integrates **Supabase** for backend management and **MetaMask** for blockchain identity verification — ensuring **secure, verifiable authorship tracking** for AI-generated works.  
-Originally built and hosted on **Lovable**, it is now linked to a personal Supabase instance.
 
 ---
 
@@ -27,12 +26,27 @@ By combining **blockchain transparency** with **AI prompt tracking**, it ensures
 ---
 
 ## 🪙 Blockchain Integration
-
+> “The credentials provided to the wallet are for testing purposes only. No one can withdraw or use the test Ethereum for personal use.”
 To use this app:
 1. Install the **MetaMask browser extension**.
-2. Create or connect your **MetaMask wallet**.
-3. Use your wallet identity to sign and store content hashes on the blockchain.
-4. Each entry acts as **immutable proof of authorship** and originality.
+2. Open the extension.
+3. Connect the **Test MetaMask wallet** with the credentials provided below.
+4. Create a password to access wallet on your device.
+5. Click on the hamburger icon in top right corner and select **Networks**.
+6. Click on **Show test networks** and click on the three dots next to **Sepolia**.
+7. Add the **RPC URL** as provided below.
+8. Click on Save.
+9. Use the wallet identity to sign and store content hashes on the blockchain.
+10. Each entry acts as **immutable proof of authorship** and originality.
+
+---
+
+## Test Credentials
+
+| Name | Value |
+|---------|-------------|
+| `Secret recovery phase for wallet` | dragon call decorate picture vital worry whale still update sentence syrup march |
+| `RPC URL` | https://sepolia.infura.io/v3/f4f7ccc8d8a9467e8d04526b177ecc7f |
 
 ---
 
@@ -126,8 +140,8 @@ To use this app:
 Before generating or registering content:
 
 1. Ensure MetaMask extension is installed and unlocked
-2. Connect your wallet when prompted
-3. Your wallet address becomes your decentralized author identity
+2. Connect the test wallet when prompted
+3. The wallet address becomes your decentralized author identity
 4. Each generated content's hash is signed and stored on-chain for verification
 
 ## 🧠 How It Works
